@@ -1,0 +1,396 @@
+\documentclass[acmsmall]{acmart}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\definecolor{DarkGreen}{rgb}{0.1,0.5,0.1}
+\newcommand{\todo}[1]{\textcolor{DarkGreen}{[To do: #1]}}
+\newcommand{\al}[1]{\textcolor{red}{[AL: #1]}}
+\newcommand{\spb}[1]{\textcolor{blue}{[SB: #1]}}
+\newcommand{\nn}[1]{\textcolor{violet}{[NN: #1]}}
+
+\title{[project plan]}
+
+\author{Sebastian Benthall, Alan Lujan, Ngozi Nwanta}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{policy version}
+
+\subsection{economics version}
+
+
+Household credit markets are characterized by unsecured borrowing, heterogeneous income risk, and the inherent possibility of default. Building upon the seminal work of Huggett (1993) \cite{Huggett1993}, which introduced heterogeneous-agent models with incomplete markets and idiosyncratic shocks, subsequent research has incorporated limited enforcement and default, as seen in models of sovereign default (Arellano, 2008 \cite{Arellano2008}) and consumer default (Chatterjee et al., 2007 \cite{Chatterjee2007}; Livshits et al., 2007 \cite{Livshits2007}). These frameworks have become essential tools for understanding real-world credit market dynamics.
+\todo{... don't mention sovereign debt up front; move to conclusion as implication}
+
+Concurrently, the financial industry has witnessed a revolution driven by machine learning (ML) and big data. These techniques have transformed credit scoring and loan pricing, enabling lenders to leverage extensive borrower data to predict default risk and implement individualized interest rates. This practical shift motivates the integration of ML methodologies into quantitative macro-finance and consumer-credit models.
+
+The regulatory landscape is equally critical. Regulatory bodies worldwide, including the Consumer Financial Protection Bureau (CFPB) in the U.S., ...  disclosure mandates, anti-discrimination constraints, and data privacy regulations. These regulations aim to ensure market fairness, prevent predatory pricing, and protect vulnerable consumers.
+\todo{focus on diversity of US laws and then bring up potential globali implications in discussion}
+
+This report provides a comprehensive outline of a modeling framework that:
+\begin{itemize}
+    \item Establishes a baseline Huggett model with default.
+    \item Integrates a deep learning-driven interest rate function (the "kernel") into this framework.
+    \item Employs discrete credit scores within a partial equilibrium setting to maintain tractability of the household problem.
+    \item Explores a range of consumer-protection policies and details their incorporation within this modeling environment.
+\end{itemize}
+
+
+\section{Policy Dimensions}
+
+
+\subsection{Policy Analysis and Insights}
+\spb{Ngozi to review this and select which topics of are interest and should be included. }
+
+
+This framework enables a detailed analysis of various policy impacts:
+
+\begin{itemize}
+    \item \textbf{Impact of Interest Rate Caps:}
+    \begin{itemize}
+        \item Interest rate caps may lead to credit rationing for high-risk borrowers if the cap is set below the actuarially fair rate.
+        \item Overall default rates may decrease, but some households, particularly those in higher-risk categories, may lose access to credit markets entirely.
+    \end{itemize}
+    \item \textbf{Credit Score Dynamics and "Fresh Start" Policies:}
+    \begin{itemize}
+        \item Policies promoting faster credit score recovery post-default can enhance welfare by allowing households to rebuild their creditworthiness more quickly after financial shocks. However, this may also increase moral hazard by reducing the long-term consequences of default.
+        \item Conversely, stricter credit score transitions or longer exclusion periods can deter default ex ante but may trap some borrowers in a "Bad" credit state with limited access to borrowing.
+    \end{itemize}
+    \item \textbf{Machine Learning and Discrimination:}
+    \begin{itemize}
+        \item The use of rich data and machine learning can improve the accuracy of risk forecasts, potentially lowering interest rates for some borrowers while raising them for others based on more granular risk assessments.
+        \item Regulatory limitations on feature usage, imposed to prevent "proxy discrimination" or protect privacy, may reduce the overall predictive power of ML models and alter the landscape of cross-subsidization in credit markets.
+    \end{itemize}
+    \item \textbf{Forbearance and Moral Hazard:}
+    \begin{itemize}
+        \item Mandated forbearance policies can provide crucial relief to households during adverse economic shocks, helping to prevent defaults during temporary hardship. However, such policies may also introduce moral hazard and could lead to higher ex-ante interest rates for all borrowers to compensate lenders for the increased risk associated with forbearance.
+        \item The model can be used to quantify how forbearance policies shift the stationary distribution $\mu^*$ and alter the overall likelihood of default in the economy.
+    \end{itemize}
+\end{itemize}
+
+
+
+\subsection{Policy Choices}
+
+\subsubsection{Privacy rules}
+
+\subsubsection{Nondiscrimination rules}
+
+\subsection{Policy Goals}
+
+\spb{What are the goals of consumer protection regulation? Let's enumerate them here. We will later operationalize these as measurements on the model.}
+
+Financial regulators aim to achieve a balance between promoting fair access to credit and preventing exploitative lending practices and over-indebtedness. In the context of ML-driven lending, regulations may seek to constrain the use of algorithms, impose caps on interest rates, mandate certain lending practices, or enforce fairness and transparency.
+
+\subsubsection{Access to credit}
+
+\subsubsection{Nondiscrimination}
+
+\paragraph{disparate impact}
+
+\paragraph{disparate treatment}
+
+
+
+\section{Baseline model}
+
+
+\subsection{Household Problem without Default}
+
+
+The foundational \citep{Huggett1993} model considers an economy populated by heterogeneous households. Key elements include:
+
+\begin{itemize}
+    \item \textbf{Heterogeneous Households:} A continuum of infinitely lived agents face idiosyncratic income shocks $y_t$, which follow a Markov process.
+    \item \textbf{Borrowing/Saving:} Households can engage in borrowing and saving using a one-period bond $b$. In the original Huggett (1993) model, default is absent, and the interest rate (or bond price) adjusts in general equilibrium to ensure market clearing.
+    \item \textbf{Incomplete Insurance:} Households cannot fully insure against income fluctuations and rely on self-insurance through saving and borrowing to smooth consumption over time.
+\end{itemize}
+
+Mathematically, the household's problem in the absence of default can be expressed as:
+\begin{equation}
+\begin{aligned}
+V(b, y) &= \max_{b'} \Bigl\{ u\bigl(y + b - q\,b'\bigr) + \beta \,\mathbb{E}\bigl[V(b', y')\bigr] \Bigr\} \\
+\text{subject to } \quad b' &\ge \underline{b},
+\end{aligned}
+\end{equation}
+where $V(b, y)$ is the value function for a household with current bond holdings $b$ and income $y$, $b'$ is the chosen bond holding for the next period, $u(\cdot)$ is the utility function, $q$ is the bond price (inverse of $1+r$, where $r$ is the interest rate), $\beta$ is the discount factor, $\mathbb{E}[\cdot]$ is the expectation operator, and $\underline{b}$ is an exogenous borrowing limit.
+
+\spb{We need to decide if we want to start with the Hugget model literally or do something more realistic.}
+
+\spb{I'd like us to break this up into more granular transition equations}
+
+In a general equilibrium setting, the bond price $q$ is determined such that the aggregate bond supply is equal to the aggregate bond demand, typically represented by the condition $\int b' \, d\mu = 0$, where $\mu$ is the stationary distribution of households. This equilibrium condition determines a risk-free interest rate that reflects households' precautionary savings behavior.
+
+\subsection{Introducing Default}
+
+\spb{This is a departure from the Hugget model, yes?}
+
+\subsection*{Limited Enforcement and Default Decision}
+
+To incorporate default, the model must specify:
+
+\begin{itemize}
+    \item \textbf{Default Decision:} Households must evaluate and choose between repaying their debt and defaulting. This decision is based on comparing the continuation values of both actions.
+    \item \textbf{Punishment upon Default:} Default triggers a penalty, which can take various forms such as exclusion from credit markets, wage garnishment, a utility loss ("utility stigma"), or a reduction in credit score.
+\end{itemize}
+
+In this framework, we augment the household's problem by introducing a discrete choice within the Bellman equation:
+\begin{equation}
+V(b, y) = \max \Bigl\{V^\text{repay}(b,y), \;V^\text{default}(b,y)\Bigr\}.
+\end{equation}
+
+\spb{I find the introduction of the multiple value functions here very confusing. only an AI would create notation this convoluted -- $\Omega$ isn't well defined. We need to better figure out how to represent the consequences of default.}
+
+The value of repaying is given by:
+\begin{equation}
+V^\text{repay}(b,y) = \max_{b'} \Bigl\{
+    u\bigl(y + b - q(b',y)\,b'\bigr)
+    + \beta \,\mathbb{E}[V(b',y')]
+  \Bigr\}.
+\end{equation}
+The value of defaulting is:
+\begin{equation}
+V^\text{default}(b,y) = u\bigl(\tilde{c}(y)\bigr) + \beta \,\mathbb{E}[\Omega(y')],
+\end{equation}
+where $\tilde{c}(y)$ represents consumption upon default, and $\Omega(\cdot)$ is the continuation value in the default or exclusion state, reflecting the consequences of default.
+
+\subsection{Interest Rate (or Price) Kernel}
+
+\spb{We should set up, and motivate, the way in which the pricing function is an optimization problem. That we use deep-learning to solve that optimization problem is a methodological choice, not a modeling choice.}
+
+%%In contemporary lending practices, machine learning techniques are extensively used to forecast default risk using a wide array of borrower characteristics. To mirror this, we replace the traditional default probability formula with a learned function, the deep learning interest rate kernel:
+
+\spb{Didn't banks set interest rates before there was machine learning?}
+
+\spb{I don't think this equation says anything because $\Phi$ is undefined -- literally just defining $q = \Phi$}
+
+\begin{equation}
+q_\theta(s, b') = \Phi_\theta\bigl(s, b'\bigr),
+\end{equation}
+where:
+\begin{itemize}
+    \item $s$ represents the observable household state, which can include income $y$, current assets $b$, credit score $cs$, and potentially other relevant features. \spb{this should be defined earlier, or not at all...}
+    \item $b'$ is the household's choice of next-period borrowing or saving.
+    \item $\theta$ denotes the parameters of a \todo{the pricing rule}.
+\end{itemize}
+
+
+In a partial equilibrium framework, lenders are assumed to have access to funds at an exogenous risk-free rate $r^*$. They lend to households using a price function $q_\theta$. Lenders aim to maximize or ensure non-negative expected profits, defined as:
+
+\spb{This is a nonsense equation. what is 'repayment'? we have to fix this...}
+
+\begin{equation}
+\text{Profit}(\theta) = \mathbb{E}\bigl[
+   \mathbf{1}(\text{repayment}) \times q_\theta(s,b')\,b'
+   - (1+r^*)\times(\text{cost of funds})
+\bigr] \ge 0.
+\end{equation}
+
+
+\spb{I think this is repeated in greater detail elsewhere; what is this contributing here?}
+
+To achieve this, an iterative process is employed:
+\begin{enumerate}
+    \item Guess the parameters $\theta$ of the pricing function $q_\theta$.
+    \item Solve the households’ optimization problem to obtain optimal policies for borrowing and default, $\{b'^*(s), \delta^*(s)\}$.
+    \item Simulate the model or compute the stationary distribution $\mu^*$ of households across states.
+    \item Calculate the realized profits or losses for lenders based on $q_\theta$ and $\mu^*$. \spb{why aren't the lenders discounting utility of profit?}
+    \item Update the parameters $\theta$ to satisfy the zero-profit condition or maximize profits, often using gradient-based methods. \spb{which?}
+\end{enumerate}
+
+\subsection*{Consistency of Predicted and Actual Default and ML Kernel Training}
+
+\spb{Maybe we can improve on this algorithmically}
+
+The model necessitates a joint solution because households' default decisions are endogenous and depend on their optimization problem. The machine learning function, which predicts default and sets interest rates, must be consistent with the actual default behavior emerging in equilibrium.  If the interest rate offers implied by the ML kernel systematically underprice risk for certain borrowers, the actual default rate will exceed the predicted default rate, leading to losses for lenders.
+
+This consistency is achieved through an iterative training process. The parameters $\theta$ of the ML kernel are updated in an outer loop, while in an inner loop, the household's dynamic programming problem is solved given the current pricing kernel $q_{\theta}$. This "nested" iteration is computationally intensive but conceptually straightforward. Convergence is reached when the predicted default probabilities embedded in the pricing kernel closely match the actual default rates observed in the simulated equilibrium. This iterative approach corrects for potential mispricing by the ML kernel and ensures that the learned pricing function is consistent with equilibrium default behavior.
+
+\section*{Discrete Credit Scores \& Partial Equilibrium}
+
+\subsection{Tractability through Discrete Credit Scores}
+
+\spb{I'm not convinced we need the discretization here. But it's plausible. In reality, credit scoring is done by a service that is different from the lender. A more realistic model would have credit scoring be more of a decision rule than an exogenously directed process.}
+
+Incorporating a continuous state variable for credit history can significantly increase the computational burden. To maintain tractability, we adopt a discrete credit score approach. Households are assigned to a discrete credit score $cs \in \{\text{Bad, Fair, Good}\}$, which serves as a proxy for creditworthiness.
+
+Credit scores transition between these discrete states based on household behavior:
+\begin{itemize}
+    \item \textbf{Default Impact:} A default event typically results in a transition to the "Bad" credit score state.
+    \item \textbf{Repayment History:} Consistent on-time repayments can lead to gradual improvements in credit score, moving from "Bad" to "Fair" and eventually to "Good" over time, according to predefined transition probabilities.
+\end{itemize}
+
+\subsection{Partial Equilibrium Rationale and Trade-off}
+
+Adopting a partial equilibrium framework offers several simplifications, making the model more tractable and policy-focused:
+
+\begin{itemize}
+    \item \textbf{Exogenous Cost of Funds:} The cost of funds for lenders, $r^*$, is treated as exogenous, simplifying the lender's problem. In contrast, a general equilibrium model would endogenously determine the risk-free rate by requiring asset market clearing.
+    \item \textbf{Interest Rate Schedules by Credit Score:} Lenders set interest rate schedules $q_\theta(cs,b')$ or offer discrete contracts that are specific to each credit score class.
+    \item \textbf{No Aggregate Bond Market Clearing:} The model does not require a market-clearing condition for aggregate bonds, thereby avoiding the complexity of endogenously determining the interest rate $r$ to equate aggregate saving and borrowing.
+\end{itemize}
+This partial equilibrium setup is particularly suitable for analyzing consumer credit markets, which are often small relative to the broader economy and global capital markets, and when the primary focus is on policy analysis rather than the determination of the aggregate risk-free rate. While general equilibrium models offer a more complete macroeconomic perspective, the partial equilibrium approach provides a valuable simplification for targeted policy evaluations in consumer credit markets.
+
+\section{Implementing Policy Choices}
+
+
+\subsection{Implementation of Regulatory Constraints}
+
+Regulatory constraints are incorporated into the algorithm as follows:
+
+\begin{itemize}
+    \item \textbf{Interest Rate Caps:} Enforce the cap $r \leq \overline{r}$ directly during the training or optimization of the neural network, ensuring that the output interest rate never exceeds the regulatory limit.
+    \item \textbf{Fairness Mandates:} Introduce a penalty term in the lender's profit function if interest rates exhibit systematic disparities across protected groups, or implement constraints to limit these disparities directly.
+    \item \textbf{Privacy Restrictions:}  Implement data usage restrictions by removing the prohibited features from the input vector to the neural network $\Phi_\theta$, effectively preventing the model from using this information in pricing decisions.
+\end{itemize}
+
+
+\subsection{Policy Levers and Model Implementation}
+
+Our model framework is adaptable to incorporate various consumer protection policies:
+
+\begin{enumerate}
+    \item \textbf{Interest Rate Caps:}
+    \begin{itemize}
+        \item \textbf{Policy:} Impose an upper limit $\overline{r}$ on the interest rate, such that $r(cs,b') \leq \overline{r}$. Examples of real-world interest rate caps include usury laws in many U.S. states and the French "taux d’usure."
+        \item \textbf{Model Implementation:} Constrain the output of the neural network kernel, $q_\theta(cs,b') \geq 1/(1 + \overline{r})$. This constraint is enforced during the lender's profit maximization process.
+        \item \textbf{Expected Impact:} Prevents excessively high interest rates, particularly for high-risk borrowers, but may reduce credit availability for these segments if the cap is set too low, potentially leading to credit rationing.
+    \end{itemize}
+
+    \item \textbf{Stricter or Softer Default Penalties:}
+    \begin{itemize}
+        \item \textbf{Policy:} Adjust the severity of default penalties, such as the duration of exclusion from credit markets or the transitions between credit score states post-default. A "fresh start" policy would imply a quicker recovery of credit score after default.
+        \item \textbf{Model Implementation:} Modify the credit score transition probabilities or adjust the utility cost or continuation value associated with default in $V^\text{default}(s)$.
+        \item \textbf{Expected Impact:} Stricter penalties may reduce ex-ante borrowing and default rates, potentially lowering interest rates for low-risk borrowers but making credit recovery harder for those who default. "Fresh start" policies would have the opposite effect, potentially increasing moral hazard but improving welfare for those experiencing shocks.
+    \end{itemize}
+
+    \item \textbf{Data Usage / Privacy Restrictions:}
+    \begin{itemize}
+        \item \textbf{Policy:} Limit the types of data that the ML function $\Phi_\theta$ can utilize, prohibiting the use of sensitive or privacy-invading features.
+        \item \textbf{Model Implementation:} Restrict the input feature set for the neural network. If the full state space includes a feature set $F$, regulations might restrict inputs to a subset $F' \subset F$.
+        \item \textbf{Expected Impact:} Limits the granularity of risk-based pricing, potentially reducing the predictive power of the pricing kernel and increasing cross-subsidization across different borrower types.
+    \end{itemize}
+
+    \item \textbf{Fairness Mandates (Anti-Discrimination):}
+    \begin{itemize}
+        \item \textbf{Policy:} Enforce that lenders do not systematically offer higher interest rates to protected groups unless justified by demonstrable differences in risk fundamentals.
+        \item \textbf{Model Implementation:} Incorporate fairness constraints or penalties into the lender’s objective function. This could involve penalizing the model for unexplained disparities in interest rates across demographic groups, or constraining the maximum allowable difference in average rates between groups, conditional on risk.
+        \item \textbf{Expected Impact:} Aims to balance risk-based pricing with equitable treatment. May lead to fairer credit access and pricing for disadvantaged groups but could also reduce lender profitability and potentially overall efficiency if it forces lenders to deviate from purely risk-based pricing.
+    \end{itemize}
+
+    \item \textbf{Mandatory "Plain Vanilla" Products:}
+    \begin{itemize}
+        \item \textbf{Policy:} Require lenders to offer a standardized "plain vanilla" loan product with transparent, fixed rates and fees, alongside any ML-priced offerings.
+        \item \textbf{Model Implementation:} Allow households to choose between ML-priced loans and a "plain vanilla" product with a regulated interest rate $r_{\text{vanilla}}$. Lenders must offer both and optimize $q_\theta$ for the ML-priced product, considering the presence of the vanilla option.
+        \item \textbf{Expected Impact:} Enhances transparency and competition by providing a benchmark product. Consumers may choose the plain vanilla option if ML-based pricing is perceived as too high or opaque.
+    \end{itemize}
+
+    \item \textbf{Minimum Payments or Forbearance Requirements:}
+    \begin{itemize}
+        \item \textbf{Policy:} Mandate that lenders offer some flexibility in repayment, such as lower minimum payments or forbearance during periods of economic distress (e.g., unemployment, health shocks).
+        \item \textbf{Model Implementation:} Model this as a state-contingent policy that modifies loan terms or allows for temporary payment deferral under specific conditions. This can be reflected in adjustments to the household's default penalty or the feasible set of borrowing choices.
+        \item \textbf{Expected Impact:} Provides a safety net for borrowers during adverse shocks, potentially reducing default rates during crises. However, it may also increase moral hazard and could lead to higher ex-ante interest rates to compensate for the added risk of forbearance.
+    \end{itemize}
+\end{enumerate}
+
+
+\subsection{Measuring Policy Goals}
+
+\section{Methods}
+
+\section*{Implementation and Computation}
+
+\subsection{Algorithmic Outline for Partial Equilibrium}
+
+The computational implementation in partial equilibrium involves an iterative algorithm:
+\begin{enumerate}
+    \item \textbf{Initialize Pricing Function:} Begin with an initial guess for the parameters of the pricing function, $\Phi_{\theta^{(0)}}$.
+    \item \textbf{Solve Household Problem:} For a given pricing function $\Phi_{\theta^{(k)}}$, solve the household's dynamic programming problem for each state $(b,y,cs)$ to obtain optimal policy functions for borrowing $b'^{*}(s)$ and default $\delta^{*}(s)$.
+    \item \textbf{Compute Stationary Distribution:} Simulate household behavior or use iterative methods to compute the stationary distribution $\mu^{*}$ of households across states, based on the policy functions and income transitions.
+    \item \textbf{Calculate Lender Profits:} Evaluate the realized lender profits (or losses) under the current pricing function $\Phi_{\theta^{(k)}}$, using the stationary distribution $\mu^{*}$.
+    \item \textbf{Update Network Parameters:} Update the parameters $\theta$ to better align with the lender's objective (e.g., zero profit, profit maximization, or adherence to regulatory constraints)  \spb{We have left the lender's objective wide open}. This is typically done using gradient-based optimization techniques, ensuring convergence between predicted and actual default rates:
+    \begin{equation}
+        \theta^{(k+1)} = \theta^{(k)} + \eta \, \nabla_{\theta} \, \Pi(\theta^{(k)}),
+    \end{equation}
+    where $\eta$ is the learning rate and $\Pi(\theta^{(k)})$ is the profit function. This step is crucial for correcting potential underpricing of risk by the ML kernel and ensuring consistency in equilibrium.
+    \item \textbf{Check for Convergence:} Repeat steps 2-5 until convergence is achieved in the parameters $\theta$, the household policy functions, and the stationary distribution $\mu$, based on predefined tolerance levels.
+\end{enumerate}
+
+\subsection{Computational Complexity Considerations}
+
+\paragraph{Household Dynamic Programming}
+With discrete credit scores and appropriately sized grids for asset and income states $(b,y)$, solving the household dynamic programming problem using value function iteration remains computationally tractable.
+\spb{I don't believe it. Why don't we use the Maliar method \cite{maliar2021deep}, or a variation, to get around this?}
+
+\paragraph{We come up with a clever algorithm here}
+
+\section{Results}
+
+TBD
+
+\section{Discussion}
+
+TBD
+
+
+
+
+\section{Concluding Remarks and Future Extensions}
+
+Developing consumer credit-default models that effectively integrate:
+\begin{itemize}
+    \item Heterogeneous agents facing realistic income risk,
+    \item Default mechanisms with associated penalties and credit-score transitions,
+    \item Deep learning kernels for sophisticated loan pricing and acceptance decisions,
+    \item Policy and regulatory constraints,
+\end{itemize}
+provides a robust framework for analyzing contemporary credit markets. The partial-equilibrium structure—with an exogenous cost of funds and a focus on tracking the distribution of households—offers a valuable balance between tractability and realism, particularly when focusing on policy analysis. 
+
+This modeling setup serves as a powerful laboratory for examining how various regulatory interventions, such as adjustments to interest-rate caps, data privacy rules, anti-discrimination mandates, \todo{finalize later}, impact the equilibrium distribution of borrowers, their default behaviors, and overall welfare \todo{finalize later}. By iteratively linking household optimization with lender pricing strategies—informed by deep learning—researchers can capture critical feedback loops where default behavior influences pricing, and pricing in turn shapes borrowing decisions.
+
+
+...
+
+Future research could fruitfully extend this framework in several directions. Incorporating behavioral frictions, such as present bias or inattention, could provide richer insights into household borrowing and default decisions. 
+
+\paragraph{general equilibrium}
+While a full general-equilibrium approach, endogenizing the risk-free rate and potentially incorporating multi-lender competition as in Drozd and Nosal (2012) \cite{Drozd2012}, remains a valuable direction for future research, the partial equilibrium setup is well-suited for isolating the effects of specific consumer protection policies.
+
+
+\paragraph{soveriegn debt?}
+Introducing aggregate shocks, similar to those in Arellano’s (2008) sovereign default model, would allow for the analysis of how policy and ML pricing interact with business cycles. Furthermore, exploring models with competition or search frictions among lenders, where multiple lenders coexist and employ ML-based pricing strategies, could offer a more nuanced understanding of strategic interactions in the credit market.  These extensions would further enhance the model's ability to provide quantitatively and qualitatively insightful results concerning modern consumer-lending markets and the crucial role of consumer financial protection in this evolving landscape, moving towards a broader research agenda in macro-finance and regulatory economics. \spb{I don't understand any of this.}
+
+\paragraph{global policy outlook} Global policies in this area may have more variation. 
+...the Financial Conduct Authority (FCA) in the U.K., and the European Consumer Credit Directive (CCD) in the EU, alongside national usury laws, enforce consumer-protection rules. Examples of such regulations include interest-rate caps (like usury laws in many U.S. states or the French "taux d’usure"),
+
+
+\section*{Selected References}
+\todo{Move these references into the bibtex/actual biography}
+\begin{itemize}
+    \item Arellano, C. (2008). “Default Risk and Income Fluctuations in Emerging Economies.” \textit{American Economic Review}, \textit{98}(3), 690–712. \href{https://www.aeaweb.org/articles?id=10.1257/aer.98.3.690}{AER}
+    \item Bartlett, R., Morse, A., Stanton, R., \& Wallace, N. (2022). “Consumer-Lending Discrimination in the FinTech Era.” \textit{Journal of Financial Economics}, \textit{143}(1), 30–56. \href{https://www.sciencedirect.com/science/article/pii/S0304405X2100212X}{JFE}
+    \item Campbell, J. Y. (2016). “Restoring Rational Choice: The Challenge of Consumer Financial Regulation.” \textit{American Economic Review}, \textit{106}(5), 1–30. \href{https://www.aeaweb.org/articles?id=10.1257/aer.20151213}{AER}
+    \item Chatterjee, S., Corbae, P., Nakajima, M., \& Ríos-Rull, J.-V. (2007). “A Quantitative Theory of Unsecured Consumer Credit with Risk of Default.” \textit{Econometrica}, \textit{75}(6), 1525–1589. \href{https://www.econometricsociety.org/publications/econometrica/1999/09/01/quantitative-theory-unsecured-consumer-credit-risk-default}{Econometrica}
+    \item Drozd, Ł., \& Nosal, J. (2012). “Credit Market Competition and the Macroeconomy.” \textit{Journal of Economic Theory}, \textit{147}(6), 2458–2484. \href{https://www.sciencedirect.com/science/article/pii/S002205311200082X}{JET}
+    \item Einav, L., \& Levin, J. (2019). “Economics in the Age of Big Data.” \textit{Science}, \textit{363}(6426). \href{https://www.science.org/doi/10.1126/science.aav8198}{Science}
+    \item Herkenhoff, K. (2019). “The Impact of Consumer Credit Access on Unemployment.” \textit{Review of Economic Studies}, \textit{86}(6), 2605–2642. \href{https://academic.oup.com/restud/article-abstract/86/6/2605/5489438}{RES}
+    \item Huggett, M. (1993). “The Risk-Free Rate in Heterogeneous-Agent Incomplete-Insurance Economies.” \textit{Journal of Economic Dynamics and Control}, \textit{17}, 953–969. \href{https://www.sciencedirect.com/science/article/pii/0165188993900407}{JEDC}
+    \item Livshits, I., MacGee, J., \& Tertilt, M. (2007). “Consumer Bankruptcy: A Fresh Start.” \textit{American Economic Review}, \textit{97}(1), 402–418. \href{https://www.aeaweb.org/articles?id=10.1257/aer.97.1.402}{AER}
+    \item Mullainathan, S., \& Spiess, J. (2017). “Machine Learning: An Applied Econometric Approach.” \textit{Journal of Economic Perspectives}, \textit{31}(2), 87–106. \href{https://www.aeaweb.org/articles?id=10.1257/jep.31.2.87}{JEP}
+\end{itemize}
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references,econ-refs}
+
+
+
+\end{document}

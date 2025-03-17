@@ -1,0 +1,40 @@
+\documentclass[acmsmall]{acmart}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Literature review}
+\author{Zixuan Pan}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\section{Literature Review}
+Recent research has shown that new methods in machine learning and computational modeling can help improve consumer credit policies. Many studies now try to balance high prediction accuracy with fairness. Some researchers focus on fairness using causal methods. Mhasawade and Chunara (2021) propose a framework called \emph{Causal Multi-Level Fairness} \cite{mhasawade2021causalmultilevelfairness}. They include both individual-level and group factors in their causal models. Their work helps to identify and remove unfair effects. \citet{creager2020causalmodelingfairnessdynamical} also use causal modeling. They study fairness in systems that change over time . Madras et al. (2019) build a latent-variable model to separate the effects of sensitive attributes from other factors \cite{10.1145/3287560.3287564}. These studies show that causal methods can help design fair credit decisions.
+
+Other researchers study the impact of advanced machine learning on credit markets. Fuster et al. \cite{https://doi.org/10.1111/jofi.13090} compare traditional regression methods with machine learning models such as random forests. They find that machine learning models can improve prediction of loan defaults. However, these models may also increase risk for certain groups. Papadopoulos \cite{PAPADOPOULOS201939} uses an agent-based model to simulate how income inequality affects consumer borrowing and default risk. His work shows that higher inequality leads low-income households to depend more on credit, which increases the risk of bad loans.
+
+Deep learning is also gaining ground in solving dynamic economic models. Maliar et al. \cite{MALIAR202176} present a deep learning method to solve high-dimensional dynamic programming problems by approximating the Bellman and Euler equations using neural networks. Their approach is faster than traditional numerical methods and can be useful when modeling consumer credit decisions that change over time.
+
+Agent-based modeling (ABM) offers another way to study these issues. Axtell and Farmer \cite{Axtell2022} review how ABM has evolved in economics and finance. ABM simulates the behavior of many agents, such as consumers and banks, to study market dynamics. It captures individual differences and non-linear interactions. ABM can show how small-scale decisions lead to large-scale market outcomes.
+
+I believe that integrating these methods can improve consumer credit policy. Fairness-aware causal models can help ensure that algorithms do not discriminate against vulnerable groups. Deep learning methods make it possible to solve complex, dynamic models quickly. ABM can simulate the interactions between consumers and banks under different conditions. For example, a combined model could predict default risk accurately while also testing the impact of policy changes like adjusting debt-to-income thresholds or offering targeted support to low-income consumers.
+
+In summary, the literature shows that advanced machine learning models have the potential to improve credit risk predictions. However, they may also reinforce existing inequalities if fairness is not addressed. Combining causal inference, deep learning, and agent-based modeling offers a promising approach to create consumer credit policies that are both effective and fair.
+
+
+
+Maliar method! \cite{maliar2021deep}
+
+\section{Conclusion}
+
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+
+
+
+\end{document}
